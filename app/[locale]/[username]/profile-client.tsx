@@ -177,7 +177,6 @@ export function ReviewFormSection({
   if (!currentUserId) {
     return (
       <div className="mt-6 bg-[#F2EDE8] rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <span className="text-2xl">⭐</span>
         <div className="flex-1">
           <p className="text-sm font-medium text-[#1C1C1C]">Bạn đã từng dùng dịch vụ này?</p>
           <p className="text-xs text-[#6B6560] mt-0.5">Đăng nhập để để lại đánh giá cho nghệ sĩ.</p>

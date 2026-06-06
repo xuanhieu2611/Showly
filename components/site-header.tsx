@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
+import { LocaleToggle } from "./locale-toggle";
 
 interface SiteHeaderProps {
   locale: string;
@@ -62,7 +63,7 @@ export async function SiteHeader({ locale, transparent = false }: SiteHeaderProp
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link
           href={`/${locale}`}
-          className="font-heading text-xl font-bold text-[#1C1C1C]"
+          className="font-heading text-xl italic tracking-wide text-[#1C1C1C]"
         >
           Showly
         </Link>
@@ -112,6 +113,10 @@ export async function SiteHeader({ locale, transparent = false }: SiteHeaderProp
               {t("login")}
             </Link>
           )}
+
+          <div className="ml-2 pl-2 border-l border-[#E8E2DB]">
+            <LocaleToggle locale={locale} />
+          </div>
         </nav>
       </div>
     </header>

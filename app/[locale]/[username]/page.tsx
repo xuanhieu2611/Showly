@@ -26,9 +26,10 @@ type Props = {
 
 // React.cache() deduplicates these across generateMetadata + page component within one request
 const getArtistByUsername = cache(async (rawUsername: string) => {
-  const username = rawUsername.startsWith("@") ? rawUsername.slice(1) : rawUsername;
+  const decoded = decodeURIComponent(rawUsername);
+  const username = decoded.startsWith("@") ? decoded.slice(1) : decoded;
   const supabase = await createClient();
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("artist_profiles")
     .select(`
       id, username, bio, city, district,
@@ -40,6 +41,7 @@ const getArtistByUsername = cache(async (rawUsername: string) => {
     `)
     .eq("username", username)
     .maybeSingle();
+  if (error) console.error("[profile] DB error:", error.message);
   return profile;
 });
 
@@ -238,14 +240,21 @@ export default async function ArtistProfilePage({ params }: Props) {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-[#6B6560]">
-                  <span>
-                    📍 {getDistrictLabel(profile.city, profile.district)}, {getProvinceLabel(profile.city)}
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    {getDistrictLabel(profile.city, profile.district)}, {getProvinceLabel(profile.city)}
                   </span>
                   {profile.years_experience && (
-                    <span>✦ {EXPERIENCE_LABELS[profile.years_experience] ?? profile.years_experience}</span>
+                    <span className="flex items-center gap-1">
+                      <Award className="w-3.5 h-3.5 shrink-0" />
+                      {EXPERIENCE_LABELS[profile.years_experience] ?? profile.years_experience}
+                    </span>
                   )}
                   {profile.price_range && (
-                    <span>💰 {PRICE_LABELS[profile.price_range] ?? profile.price_range}</span>
+                    <span className="flex items-center gap-1">
+                      <Banknote className="w-3.5 h-3.5 shrink-0" />
+                      {PRICE_LABELS[profile.price_range] ?? profile.price_range}
+                    </span>
                   )}
                 </div>
 
@@ -255,9 +264,9 @@ export default async function ArtistProfilePage({ params }: Props) {
                       href={profile.instagram_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-[#6B6560] hover:text-[#1C1C1C] flex items-center gap-1 transition-colors"
+                      className="text-sm text-[#6B6560] hover:text-[#1C1C1C] flex items-center gap-1.5 transition-colors"
                     >
-                      📷 Instagram
+                      <InstagramIcon className="w-4 h-4" /> Instagram
                     </a>
                   )}
                   {profile.tiktok_url && (
@@ -265,9 +274,9 @@ export default async function ArtistProfilePage({ params }: Props) {
                       href={profile.tiktok_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-[#6B6560] hover:text-[#1C1C1C] flex items-center gap-1 transition-colors"
+                      className="text-sm text-[#6B6560] hover:text-[#1C1C1C] flex items-center gap-1.5 transition-colors"
                     >
-                      🎵 TikTok
+                      <TikTokIcon className="w-4 h-4" /> TikTok
                     </a>
                   )}
                 </div>
@@ -365,5 +374,23 @@ export default async function ArtistProfilePage({ params }: Props) {
         </div>
       </div>
     </>
+  );
+}
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34v-7a8.16 8.16 0 0 0 4.77 1.52V6.39a4.85 4.85 0 0 1-1-.3z" />
+    </svg>
   );
 }

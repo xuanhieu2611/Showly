@@ -2,14 +2,15 @@
 
 import { useState, useCallback, useTransition, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
 import { ArtistCardComponent } from "@/components/artist-card";
 import { PROVINCES, getDistricts } from "@/lib/vietnam-locations";
 import type { ArtistCard } from "@/app/api/artists/route";
 
 const SPECIALTIES = [
-  { value: "nail", emoji: "💅", label: "Nail Art" },
-  { value: "makeup", emoji: "💄", label: "Trang điểm" },
-  { value: "hair", emoji: "✂️", label: "Làm tóc" },
+  { value: "nail", label: "Nail Art" },
+  { value: "makeup", label: "Trang điểm" },
+  { value: "hair", label: "Làm tóc" },
 ];
 
 const SORT_OPTIONS = [
@@ -193,7 +194,7 @@ export function DiscoverClient({
       <div className="bg-white rounded-2xl border border-[#E8E2DB] p-4 space-y-4">
         {/* Search */}
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B6560]">🔍</span>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6560]" />
           <input
             type="search"
             value={q}
@@ -209,13 +210,12 @@ export function DiscoverClient({
             <button
               key={s.value}
               onClick={() => toggleSpecialty(s.value)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
                 selectedSpecialties.includes(s.value)
-                  ? "bg-[#C9A96E] border-[#C9A96E] text-white"
-                  : "bg-white border-[#E8E2DB] text-[#6B6560] hover:border-[#C9A96E]"
+                  ? "bg-[#1C1C1C] border-[#1C1C1C] text-white"
+                  : "bg-white border-[#E8E2DB] text-[#6B6560] hover:border-[#1C1C1C] hover:text-[#1C1C1C]"
               }`}
             >
-              <span>{s.emoji}</span>
               {s.label}
             </button>
           ))}
@@ -295,8 +295,7 @@ export function DiscoverClient({
         </div>
       ) : artists.length === 0 ? (
         <div className="text-center py-20 space-y-3">
-          <p className="text-5xl">🔍</p>
-          <p className="font-semibold text-[#1C1C1C]">Không tìm thấy nghệ sĩ nào</p>
+          <p className="font-heading text-2xl text-[#1C1C1C]">Không tìm thấy nghệ sĩ nào</p>
           <p className="text-sm text-[#6B6560]">Hãy thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác.</p>
           {hasActiveFilters && (
             <button
